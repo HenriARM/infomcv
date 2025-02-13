@@ -1,1 +1,3 @@
-Size of square is 22mm
+## Resources used
+
+* https://github.com/niconielsen32/CameraCalibration
