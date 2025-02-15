@@ -4,11 +4,16 @@
 
 ## TODO
 
+print coeffs before saving to pickle + 
+
+"Provide the explicit form of camera intrinsics matrix K. This can also be done by an OpenCV-function, figure out which one. Also state the resolution of your (training and test) images."
+
 * merge calibration.py with label.py (when corners not found show image and do manual points and save) else if ret==false
 * add code which runs calibration 3 times
 
 * draw axes
 * draw cube at the start of coordinates
+* color top side of coordinates
 
 * write comments to each script it's purpose, what it does
 * prepare assignment report
@@ -28,6 +33,11 @@
 
 ## REPORT
 
-Chosen tasks:
-1) in live_camera.py we test online phase using video frames (cv.VideoCapture)
-2) we calculate reprojection error for each image in calibration.py and set up threshold. If we don't meet required threshold, we eliminate images with highest reprojection error until we do. To setup threshold value it would be good to run calibration multiple times and look into its distribution, ideally it should eliminate mostly outliers. 
+Report should have 4 points
+1. I print "explicit form of camera intrinsics matrix K" 
+2. TODO
+3. TODO
+
+4. Chosen tasks:
+    1) in live_camera.py we test online phase using video frames (cv.VideoCapture)
+    2) we calculate reprojection error for each image in calibration.py and set up threshold. If we don't meet required threshold, we eliminate images with highest reprojection error until we do. To setup threshold value it would be good to run calibration multiple times and look into its distribution, ideally it should eliminate mostly outliers. 

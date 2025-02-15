@@ -34,8 +34,20 @@ axis = np.float32(
     ]
 )
 
+# Define the 3D points for the axes
+axis_points = np.float32([[0, 0, 0], [50, 0, 0], [0, 50, 0], [0, 0, -50]])
 
-def draw(img, corners, imgpts):
+
+def draw_axes(img, corners, imgpts):
+    imgpts = np.int32(imgpts).reshape(-1, 2)
+    corner = tuple(map(int, corners[0].ravel()))
+    img = cv.line(img, corner, tuple(imgpts[1]), (0, 0, 255), 5)  # X-axis in red
+    img = cv.line(img, corner, tuple(imgpts[2]), (0, 255, 0), 5)  # Y-axis in green
+    img = cv.line(img, corner, tuple(imgpts[3]), (255, 0, 0), 5)  # Z-axis in blue
+    return img
+
+
+def draw_cube(img, corners, imgpts):
     imgpts = np.int32(imgpts).reshape(-1, 2)
     # draw ground floor in green
     img = cv.drawContours(img, [imgpts[:4]], -1, (0, 255, 0), -3)
@@ -44,6 +56,28 @@ def draw(img, corners, imgpts):
         img = cv.line(img, tuple(imgpts[i]), tuple(imgpts[j]), (255, 0, 0), 3)
     # draw top layer in red
     img = cv.drawContours(img, [imgpts[4:]], -1, (0, 0, 255), 3)
+    return img
+
+
+def color_top(img, imgpts, rvecs, tvecs):
+    # Calculate distance to the camera
+    distance = np.linalg.norm(tvecs)
+    v_value = max(0, min(255, 255 * (1 - distance / 4000)))
+
+    # Calculate orientation
+    rotation_matrix, _ = cv.Rodrigues(rvecs)
+    z_axis = rotation_matrix[:, 2]
+    angle = np.arccos(np.dot(z_axis, np.array([0, 0, 1])))
+    s_value = max(0, min(255, 255 * (1 - angle / (np.pi / 4))))
+
+    # Calculate hue based on position
+    hue = int((tvecs[0] + 2000) % 180)
+
+    # Convert HSV to BGR
+    color = cv.cvtColor(np.uint8([[[hue, s_value, v_value]]]), cv.COLOR_HSV2BGR)[0][0]
+
+    # Draw the top side of the cube
+    img = cv.fillConvexPoly(img, imgpts[4:], color.tolist())
     return img
 
 
@@ -60,8 +94,12 @@ while True:
     if ret:
         corners2 = cv.cornerSubPix(gray, corners, (11, 11), (-1, -1), criteria)
         ret, rvecs, tvecs = cv.solvePnP(objp, corners2, cameraMatrix, dist)
-        imgpts, jac = cv.projectPoints(axis, rvecs, tvecs, cameraMatrix, dist)
-        frame = draw(frame, corners2, imgpts)
+        imgpts, _ = cv.projectPoints(axis_points, rvecs, tvecs, cameraMatrix, dist)
+        frame = draw_axes(frame, corners2, imgpts)
+
+        imgpts, _ = cv.projectPoints(axis, rvecs, tvecs, cameraMatrix, dist)
+        frame = draw_cube(frame, corners2, imgpts)
+        # frame = color_top(frame, imgpts, rvecs, tvecs)
 
     cv.imshow("frame", frame)
     if cv.waitKey(1) & 0xFF == ord("q"):
