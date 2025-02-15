@@ -30,7 +30,8 @@ def manual_corner_selection(image):
 
     cv.imshow("Select Corners", image)
     cv.setMouseCallback("Select Corners", click_event)
-    cv.waitKey(0)
+    while len(corners) < 4:
+        cv.waitKey(1)
     return corners
 
 
@@ -78,7 +79,6 @@ def calibrate_camera(
         gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
         ret, corners = cv.findChessboardCorners(gray, chessboard_size, None)
 
-        ret = False
         if ret:
             objpoints.append(objp)
             corners2 = cv.cornerSubPix(gray, corners, (11, 11), (-1, -1), criteria)
