@@ -4,8 +4,6 @@
 
 ## TODO
 
-print coeffs before saving to pickle + "Provide the explicit form of camera intrinsics matrix K. This can also be done by an OpenCV-function, figure out which one. Also state the resolution of your (training and test) images."
-
 * merge calibration.py with label.py (when corners not found show image and do manual points and save) else if ret==false
 * add code which runs calibration 3 times
 
@@ -28,7 +26,7 @@ print coeffs before saving to pickle + "Provide the explicit form of camera intr
 ## REPORT
 
 Report should have 4 points
-1. I print "explicit form of camera intrinsics matrix K" 
+1. "explicit form of camera intrinsics matrix K" is just `print(camera_matrix)` in `calibration.py`
 2. TODO
 3. In the `color_top` function, the color of the top plane of the cube is calculated based on the distance and orientation of the top plane relative to the camera. The color is represented in the HSV color space, which is then converted to BGR for display. 
 

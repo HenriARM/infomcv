@@ -53,6 +53,10 @@ def calibrate_camera(
         objpoints, imgpoints, frame_size, None, None
     )
 
+    # Print the explicit form of the camera intrinsics matrix K
+    print("Camera Intrinsics Matrix K:")
+    print(camera_matrix)
+
     print(f"Initial calibration error: {ret}")
 
     # Calculate initial re-projection error
