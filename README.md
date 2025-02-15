@@ -4,16 +4,10 @@
 
 ## TODO
 
-print coeffs before saving to pickle + 
-
-"Provide the explicit form of camera intrinsics matrix K. This can also be done by an OpenCV-function, figure out which one. Also state the resolution of your (training and test) images."
+print coeffs before saving to pickle + "Provide the explicit form of camera intrinsics matrix K. This can also be done by an OpenCV-function, figure out which one. Also state the resolution of your (training and test) images."
 
 * merge calibration.py with label.py (when corners not found show image and do manual points and save) else if ret==false
 * add code which runs calibration 3 times
-
-* draw axes
-* draw cube at the start of coordinates
-* color top side of coordinates
 
 * write comments to each script it's purpose, what it does
 * prepare assignment report
@@ -36,7 +30,15 @@ print coeffs before saving to pickle +
 Report should have 4 points
 1. I print "explicit form of camera intrinsics matrix K" 
 2. TODO
-3. TODO
+3. In the `color_top` function, the color of the top plane of the cube is calculated based on the distance and orientation of the top plane relative to the camera. The color is represented in the HSV color space, which is then converted to BGR for display. 
+
+Intensity reflects the distance of the top plane from the camera, it is scaled linearly from 255 (when the distance is 0) to 0 (when the distance is 4 meters or more). This ensures that closer objects appear brighter.
+
+Saturation reflects the orientation of the top plane relative to the camera, it is scaled linearly from 255 (when the top plane is parallel to the camera) to 0 (when the top plane is tilted away by 45 degrees or more). This ensures that more parallel planes appear more saturated.
+
+Hue reflects the relative position of the top plane to the camera, it is calculated based on the x-coordinate of the translation vector (tvecs). The value is adjusted and wrapped within the range [0, 180] to provide a cyclic color variation based on position.
+
+
 
 4. Chosen tasks:
     1) in live_camera.py we test online phase using video frames (cv.VideoCapture)

@@ -71,10 +71,13 @@ def color_top(img, imgpts, rvecs, tvecs):
     s_value = max(0, min(255, 255 * (1 - angle / (np.pi / 4))))
 
     # Calculate hue based on position
-    hue = int((tvecs[0] + 2000) % 180)
+    hue = int((tvecs[0][0] + 2000) % 180)  # Extract the single element from tvecs
 
     # Convert HSV to BGR
     color = cv.cvtColor(np.uint8([[[hue, s_value, v_value]]]), cv.COLOR_HSV2BGR)[0][0]
+
+    # Ensure imgpts are in the correct format
+    imgpts = np.int32(imgpts).reshape(-1, 2)
 
     # Draw the top side of the cube
     img = cv.fillConvexPoly(img, imgpts[4:], color.tolist())
@@ -99,7 +102,7 @@ while True:
 
         imgpts, _ = cv.projectPoints(axis, rvecs, tvecs, cameraMatrix, dist)
         frame = draw_cube(frame, corners2, imgpts)
-        # frame = color_top(frame, imgpts, rvecs, tvecs)
+        frame = color_top(frame, imgpts, rvecs, tvecs)
 
     cv.imshow("frame", frame)
     if cv.waitKey(1) & 0xFF == ord("q"):
