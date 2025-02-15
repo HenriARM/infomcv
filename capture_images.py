@@ -11,10 +11,10 @@ def create_images_directory(directory="images"):
         os.makedirs(directory)
 
 
-def capture_images(video_source=1, directory="images"):
+def capture_images(video_source=0, directory="images"):
     create_images_directory(directory)
     cap = cv2.VideoCapture(video_source)
-    num = 0
+    num = 16
 
     while cap.isOpened():
         success, img = cap.read()

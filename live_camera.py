@@ -99,7 +99,7 @@ def color_top(img, imgpts, rvecs, tvecs):
     return img
 
 
-cap = cv.VideoCapture(1)
+cap = cv.VideoCapture(0)
 
 while True:
     ret, frame = cap.read()
