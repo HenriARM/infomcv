@@ -4,8 +4,6 @@
 
 ## TODO
 
-* "Make sure the function you use will not assume that the camera center is fixed but is estimated and ensure that the function will allow you to have different focal lengths in horizontal and vertical directions (check the flags)."
-
 * merge calibration.py with label.py (when corners not found show image and do manual points and save) else if ret==false
 * add code which runs calibration 3 times
 

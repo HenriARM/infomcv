@@ -33,6 +33,8 @@ def calibrate_camera(images_path, chessboard_size, square_size, frame_size, crit
 
     cv.destroyAllWindows()
 
+    # Calibration without fixing principal point or aspect ratio
+    # flags = cv.CALIB_FIX_PRINCIPAL_POINT | cv.CALIB_FIX_ASPECT_RATIO
     ret, camera_matrix, dist, rvecs, tvecs = cv.calibrateCamera(
         objpoints, imgpoints, frame_size, None, None
     )
