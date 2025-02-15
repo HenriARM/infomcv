@@ -4,7 +4,22 @@ import glob
 import pickle
 
 
-def calibrate_camera(images_path, chessboard_size, square_size, frame_size, criteria):
+def calculate_reprojection_error(
+    objpoints, imgpoints, rvecs, tvecs, camera_matrix, dist
+):
+    total_error = 0
+    for i in range(len(objpoints)):
+        imgpoints2, _ = cv.projectPoints(
+            objpoints[i], rvecs[i], tvecs[i], camera_matrix, dist
+        )
+        error = cv.norm(imgpoints[i], imgpoints2, cv.NORM_L2) / len(imgpoints2)
+        total_error += error
+    return total_error / len(objpoints)
+
+
+def calibrate_camera(
+    images_path, chessboard_size, square_size, frame_size, criteria, error_threshold=1.0
+):
     # Prepare object points
     objp = np.zeros((chessboard_size[0] * chessboard_size[1], 3), np.float32)
     objp[:, :2] = np.mgrid[0 : chessboard_size[0], 0 : chessboard_size[1]].T.reshape(
@@ -33,11 +48,48 @@ def calibrate_camera(images_path, chessboard_size, square_size, frame_size, crit
 
     cv.destroyAllWindows()
 
-    # Calibration without fixing principal point or aspect ratio
-    # flags = cv.CALIB_FIX_PRINCIPAL_POINT | cv.CALIB_FIX_ASPECT_RATIO
+    # Initial calibration
     ret, camera_matrix, dist, rvecs, tvecs = cv.calibrateCamera(
         objpoints, imgpoints, frame_size, None, None
     )
+
+    print(f"Initial calibration error: {ret}")
+
+    # Calculate initial re-projection error
+    initial_error = calculate_reprojection_error(
+        objpoints, imgpoints, rvecs, tvecs, camera_matrix, dist
+    )
+    print(f"Initial re-projection error: {initial_error}")
+
+    # Iteratively remove low-quality images
+    while initial_error > error_threshold:
+        max_error = 0
+        max_error_index = -1
+        for i in range(len(objpoints)):
+            imgpoints2, _ = cv.projectPoints(
+                objpoints[i], rvecs[i], tvecs[i], camera_matrix, dist
+            )
+            error = cv.norm(imgpoints[i], imgpoints2, cv.NORM_L2) / len(imgpoints2)
+            if error > max_error:
+                max_error = error
+                max_error_index = i
+
+        if max_error_index != -1:
+            print(f"Removing image with highest re-projection error: {max_error}")
+            del objpoints[max_error_index]
+            del imgpoints[max_error_index]
+            rvecs = list(rvecs)
+            tvecs = list(tvecs)
+            del rvecs[max_error_index]
+            del tvecs[max_error_index]
+
+            ret, camera_matrix, dist, rvecs, tvecs = cv.calibrateCamera(
+                objpoints, imgpoints, frame_size, None, None
+            )
+            initial_error = calculate_reprojection_error(
+                objpoints, imgpoints, rvecs, tvecs, camera_matrix, dist
+            )
+            print(f"New re-projection error: {initial_error}")
 
     with open("calibration.pkl", "wb") as f:
         pickle.dump((camera_matrix, dist), f)

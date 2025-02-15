@@ -24,3 +24,10 @@
 - CHOICE 4: implement a function that can provide a confidence for how well each variable has been estimated, perhaps by considering subsets of the input: 10
 - CHOICE 5: implement a way to enhance the input to reduce the number of input images that are not correctly processed by findChessboardCorners, for example by enhancing edges or getting rid of light reflections: 10
 - CHOICE 6: produce a 3D plot with the locations of the camera relative to the chessboard when each of the training images was taken: 10
+
+
+## REPORT
+
+Chosen tasks:
+1) in live_camera.py we test online phase using video frames (cv.VideoCapture)
+2) we calculate reprojection error for each image in calibration.py and set up threshold. If we don't meet required threshold, we eliminate images with highest reprojection error until we do. To setup threshold value it would be good to run calibration multiple times and look into its distribution, ideally it should eliminate mostly outliers. 
