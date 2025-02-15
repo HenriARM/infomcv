@@ -1,3 +1,15 @@
+"""
+This script performs camera calibration using a set of images of a chessboard pattern.
+It includes functions to calculate the reprojection error, manually select corners if automatic detection fails,
+and interpolate the chessboard corners. The main function calibrates the camera and prints the camera intrinsics matrix.
+
+Functions:
+- calculate_reprojection_error: Calculates the average reprojection error for the calibration.
+- manual_corner_selection: Allows the user to manually select the four corners of the chessboard.
+- interpolate_corners: Interpolates the chessboard corners based on the manually selected corners.
+- calibrate_camera: Calibrates the camera using the provided images and prints the camera intrinsics matrix.
+"""
+
 import numpy as np
 import cv2 as cv
 import glob

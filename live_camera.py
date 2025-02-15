@@ -1,3 +1,18 @@
+"""
+This script captures live video from the webcam and performs real-time processing to draw 3D axes and a cube on a detected chessboard pattern.
+It uses previously saved camera calibration data to project 3D points onto the 2D image plane.
+
+Steps:
+- Load camera calibration data from a file.
+- Define the chessboard pattern size and criteria for corner refinement.
+- Prepare object points for the chessboard pattern.
+- Capture live video from the webcam.
+- Detect the chessboard pattern in each frame.
+- Draw 3D axes and a cube on the detected chessboard pattern.
+- Color the top side of the cube based on its distance and orientation relative to the camera.
+"""
+
+
 import cv2 as cv
 import numpy as np
 import pickle

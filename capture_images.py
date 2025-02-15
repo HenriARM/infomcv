@@ -1,3 +1,7 @@
+"""
+This script captures images from a video source and saves them to a specified directory.
+"""
+
 import cv2
 import os
 

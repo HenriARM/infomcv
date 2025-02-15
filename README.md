@@ -5,8 +5,8 @@
 ## TODO
 
 * add code which runs calibration 3 times
-* write comments to each script it's purpose, what it does
 * prepare assignment report
+* do choice tasks 3,4,5,6
 
 
 ### CHOICE Tasks
