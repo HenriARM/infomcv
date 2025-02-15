@@ -17,6 +17,46 @@ def calculate_reprojection_error(
     return total_error / len(objpoints)
 
 
+def manual_corner_selection(image):
+    corners = []
+
+    def click_event(event, x, y, flags, param):
+        if event == cv.EVENT_LBUTTONDOWN:
+            corners.append((x, y))
+            cv.circle(image, (x, y), 5, (0, 255, 0), -1)
+            cv.imshow("Select Corners", image)
+            if len(corners) == 4:
+                cv.destroyAllWindows()
+
+    cv.imshow("Select Corners", image)
+    cv.setMouseCallback("Select Corners", click_event)
+    cv.waitKey(0)
+    return corners
+
+
+def interpolate_corners(corners, chessboard_size):
+    top_left, top_right, bottom_right, bottom_left = corners
+    width, height = chessboard_size
+
+    objp = np.zeros((width * height, 2), np.float32)
+
+    for i in range(height):
+        for j in range(width):
+            x = (
+                top_left[0]
+                + j * (top_right[0] - top_left[0]) / (width - 1)
+                + i * (bottom_left[0] - top_left[0]) / (height - 1)
+            )
+            y = (
+                top_left[1]
+                + j * (top_right[1] - top_left[1]) / (width - 1)
+                + i * (bottom_left[1] - top_left[1]) / (height - 1)
+            )
+            objp[i * width + j] = [x, y]
+
+    return objp
+
+
 def calibrate_camera(
     images_path, chessboard_size, square_size, frame_size, criteria, error_threshold=1.0
 ):
@@ -38,6 +78,7 @@ def calibrate_camera(
         gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
         ret, corners = cv.findChessboardCorners(gray, chessboard_size, None)
 
+        ret = False
         if ret:
             objpoints.append(objp)
             corners2 = cv.cornerSubPix(gray, corners, (11, 11), (-1, -1), criteria)
@@ -45,6 +86,20 @@ def calibrate_camera(
             cv.drawChessboardCorners(img, chessboard_size, corners2, ret)
             cv.imshow("img", img)
             cv.waitKey(1000)
+        else:
+            print(
+                "Automatic corner detection failed. Please select the four corners manually."
+            )
+            corners = manual_corner_selection(img)
+            if len(corners) == 4:
+                interpolated_corners = interpolate_corners(corners, chessboard_size)
+                objpoints.append(objp)
+                imgpoints.append(interpolated_corners)
+                cv.drawChessboardCorners(
+                    img, chessboard_size, interpolated_corners, True
+                )
+                cv.imshow("img", img)
+                cv.waitKey(1000)
 
     cv.destroyAllWindows()
 

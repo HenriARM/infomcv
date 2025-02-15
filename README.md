@@ -4,9 +4,7 @@
 
 ## TODO
 
-* merge calibration.py with label.py (when corners not found show image and do manual points and save) else if ret==false
 * add code which runs calibration 3 times
-
 * write comments to each script it's purpose, what it does
 * prepare assignment report
 
